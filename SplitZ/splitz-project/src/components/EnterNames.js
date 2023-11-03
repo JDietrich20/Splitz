@@ -5,10 +5,12 @@ export default function EnterNames(){
 
   return(
     <div>
-      <h2 className="info-question">Enter their names:</h2>
+      <h1 className="info-question">Who's Splitting the Bill?
+      </h1>
+      <h2 className="info-question">Enter names:
+      </h2>
       <textarea 
-        className="info-input"
-        cols = '16'
+        id="name-input"
         value={names} 
         onChange={e => setNames(e.target.value)}
        />
