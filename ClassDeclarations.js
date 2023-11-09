@@ -16,28 +16,34 @@ class item{
 
 class bill{
     //var: arr of items, hashtable, double total, double tip, double tax
-    constructor( items=[],peopleOwe=[], total=-1, subtotal=-1){
-            this.items = items;
-            this.peopleowe=peopleOwe;
-            this.total = total;
-            this.subtotal = subtotal;
+    constructor(){
+            this.items = [];
+            this.people = []
+            this.peopleOwe=new Map();
+            this.total = -1;
+            this.subtotal = -1;
     }
 
-    remove(item, array){
+
+    /*
+    #remove(item, array){
         deletedVar = array.splice(item, 1);
         return array;
     }
     
-    findIndexOfItem(item){
+    #findIndexOfItem(item){
         return peopleSplitting.indexOf(item);
     }
-        
+    */
+
     //adding an item or person to the recpiet
-    additem(itemName){
-        this.items.push(new item(itemName,-1));
+    additem(itemName,price){
+        this.items.push(new item(itemName,price));
     }
+
     addperson(personName){
-        this.peopleowe.set(new person(personName),[])
+        this.people.push(new person(personName));
+        this.peopleOwe.set(this.people[this.people.length-1],[]);
     }
 
     editItemCost(itemVar, newCost){
@@ -46,65 +52,65 @@ class bill{
 
     editPeopleWhoOweItem(itemVar, PeopleWhoOweItem){
         itemVar.numPeopleWhoOwe = PeopleWhoOweItem.length;
-        for (let aPerson in peopleOwe.keys()){
-            if (aPerson in PeopleWhoOweItem){
-                if (!(itemVar in peopleOwe.get(aperson))){
-                    peopleOwe.set(aPerson,peopleOwe.get(aPerson).push(itemVar));
+        for (let aPerson of this.peopleOwe.keys()){
+            if (PeopleWhoOweItem.includes(aPerson)){
+                if (!(this.peopleOwe.get(aPerson).includes(itemVar))){
+                    this.peopleOwe.get(aPerson).push(itemVar);
                 }
             }else{
-                if (itemVar in peopleOwe.get(aPerson)){
-                    peopleOwe.set(aPerson,remove(itemVar,peopleOwe.get(aPerson)));
+                if (itemVar in this.peopleOwe.get(aPerson)){
+                    this.peopleOwe.set(aPerson,remove(itemVar,this.peopleOwe.get(aPerson)));
                 }
             }
         }
     }
 
-    editInput(itemVar, newName){
-        itemVar.name = newName
+    editItemName(itemVar, newName){
+        itemVar.name = newName;
     }
 
     //edits total 
     editTotal(editedTotal){this.total = editedTotal;} 
 
+    //sets the subtotal variable
+    #calculateSubtotal(){
+        this.subtotal=0;
+        for (let anItem of this.items){
+            this.subtotal+=anItem.cost;
+        }
+    }
 
+        //calculate total split for some Person
+    #personSplitTotal(aPerson){
+        let individualSubtotal = 0.0;
+        for(let item of this.peopleOwe.get(aPerson)){
+            individualSubtotal += item.cost/item.numPeopleWhoOwe;
+        }
+        return  individualSubtotal/this.subtotal*this.total;
+    }
 
     //returns a hashmap of how much people owe
     calculateSplit(){
         //calc subtotal
-        calcualteSubtotal();
+        this.#calculateSubtotal();
 
-        howMuchPeopleOwe = new Map();
-        for (let aPerson in peopleOwe.keys()){
-            howMuchPeopleOwe.set(aPerson,personSplitTotal(aPerson));
+        let howMuchPeopleOwe = new Map();
+
+        for (let aPerson of this.peopleOwe.keys()){
+            howMuchPeopleOwe.set(aPerson,Math.round(this.#personSplitTotal(aPerson)*100)/100);
         }
         return howMuchPeopleOwe;
     }
         
 
 
-    //calculate total split for some Person
-    personSplitTotal(aPerson){
-        let individualSubtotal = 0.0
-        for(let item in peopleOwe.get(aPerson)){
-            individualSubtotal += item.cost/item.numPeopleWhoOwe;
-        }
-        return  individualSubtotal/subtotal*total;
-    }
-
-    //sets the subtotal variable
-    calculateSubtotal(){
-        subtotal=0;
-        for (let anItem in items){
-            subtotal+=anItem.cost;
-        }
-    }
 
     
 }
 
 
 //testing ground
-
+/*
 //person class testing
 let person1 = new person();
 console.log(person1.name); //Hi
@@ -141,10 +147,9 @@ peopleSplitting.shift();
 recpiet = new bill(peopleSplitting);
 console.log(recpiet);
 
-
-
-
+*/
 /*
+
 //testing ground
 peopleSplitting = ["Josh", "Lily", "Daniel"];
 peopleSplitting.push("Ron", "George");
@@ -173,3 +178,22 @@ remove(findIndexOfItem("Lily"), peopleSplitting);
 console.log(recpiet);
 
 */
+check = new bill();
+check.addperson("alice");
+check.addperson("bob");
+check.addperson("eve");
+//console.log(check.peopleOwe);
+check.additem("cheeseburger",10.58);
+check.additem("fires", 6.99);
+check.additem("milkshake", 5.99);
+//console.log(check.peopleOwe);
+check.editPeopleWhoOweItem(check.items[0],[check.people[0]]);
+check.editPeopleWhoOweItem(check.items[1],[check.people[0],check.people[2]]);
+check.editPeopleWhoOweItem(check.items[2],[check.people[1]]);
+
+check.editItemCost(check.items[0],10);
+//console.log(check.peopleOwe);
+check.editTotal(30.0);
+console.log(check.calculateSplit());
+check.editPeopleWhoOweItem(check.items[2],[check.people[1],check.people[0]]);
+console.log(check.calculateSplit());
