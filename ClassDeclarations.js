@@ -115,7 +115,7 @@ class bill{
         let howMuchPeopleOwe = new Map();
 
         for (let aPerson of this.peopleOwe.keys()){
-            howMuchPeopleOwe.set(aPerson,Math.round(this.#personSplitTotal(aPerson)*100)/100);
+            howMuchPeopleOwe.set(aPerson,Math.round(this.#individualSplitTotal(aPerson)*100)/100);
         }
         return howMuchPeopleOwe;
     }
@@ -212,6 +212,6 @@ check.editPeopleWhoOweItem(check.items[2],[check.people[1]]);
 check.editItemCost(check.items[0],10);
 //console.log(check.peopleOwe);
 check.editTotal(30.0);
-console.log(check.calculateSplit());
+console.log(check.calculateTotalSplit());
 check.editPeopleWhoOweItem(check.items[2],[check.people[1],check.people[0]]);
-console.log(check.calculateSplit());
+console.log(check.calculateTotalSplit());
