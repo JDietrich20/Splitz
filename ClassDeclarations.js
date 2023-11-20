@@ -1,10 +1,40 @@
+/*function to ensure variable typing is correct and won't cause error to overall code
+plug these into functions that require user input to ensure the user is inputting the 
+correct variable type. IF NOT, do not proceed with current flow and have them correct
+their input given to the system
+*/
+function isNumber(variable){
+    if(typeof(variable) == 'number'){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+function isString(variable){
+    if(typeof(variable) == 'string'){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+/*
+steps of process:
+1. grab input from user
+2. check input from user
+IF VALID: proceed
+IF ERROR: have user type in the correct input 
+*/
+
 
 class person{
     constructor(name = "Hi"){
         this.name = name;
     }
 }
-
 
 class item{
     constructor(name, cost=-1,numPeopleWhoOwe=-1){
@@ -23,18 +53,6 @@ class bill{
             this.total = -1;
             this.subtotal = -1;
     }
-
-
-    /*
-    #remove(item, array){
-        deletedVar = array.splice(item, 1);
-        return array;
-    }
-    
-    #findIndexOfItem(item){
-        return peopleSplitting.indexOf(item);
-    }
-    */
 
     //adding an item or person to the recpiet
     additem(itemName,price){
@@ -81,7 +99,7 @@ class bill{
     }
 
         //calculate total split for some Person
-    #personSplitTotal(aPerson){
+    #indvidualSplitTotal(aPerson){
         let individualSubtotal = 0.0;
         for(let item of this.peopleOwe.get(aPerson)){
             individualSubtotal += item.cost/item.numPeopleWhoOwe;
@@ -90,7 +108,7 @@ class bill{
     }
 
     //returns a hashmap of how much people owe
-    calculateSplit(){
+    calculateTotalSplit(){
         //calc subtotal
         this.#calculateSubtotal();
 
