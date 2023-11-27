@@ -1,35 +1,3 @@
-/*function to ensure variable typing is correct and won't cause error to overall code
-plug these into functions that require user input to ensure the user is inputting the 
-correct variable type. IF NOT, do not proceed with current flow and have them correct
-their input given to the system
-*/
-function isNumber(variable){
-    if(typeof(variable) == 'number'){
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-function isString(variable){
-    if(typeof(variable) == 'string'){
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-/*
-steps of process:
-1. grab input from user
-2. check input from user
-IF VALID: proceed
-IF ERROR: have user type in the correct input 
-*/
-
-
 class person{
     constructor(name = "Hi"){
         this.name = name;
@@ -64,6 +32,7 @@ class bill{
         this.peopleOwe.set(this.people[this.people.length-1],[]);
     }
 
+    
     editItemCost(itemVar, newCost){
         itemVar.cost = newCost; 
     }
@@ -88,7 +57,9 @@ class bill{
     }
 
     //edits total 
-    editTotal(editedTotal){this.total = editedTotal;} 
+    editTotal(editedTotal){
+        this.total = editedTotal;
+    } 
 
     //sets the subtotal variable
     #calculateSubtotal(){
