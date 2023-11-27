@@ -26,6 +26,10 @@ class bill{
     additem(itemName,price){
         this.items.push(new item(itemName,price));
     }
+    
+    removeitem(item){  
+        this.items.splice(this.items.indexOf(item),1);
+    }
 
     addperson(personName){
         this.people.push(new person(personName));
@@ -86,17 +90,101 @@ class bill{
         let howMuchPeopleOwe = new Map();
 
         for (let aPerson of this.peopleOwe.keys()){
-            howMuchPeopleOwe.set(aPerson,Math.round(this.#individualSplitTotal(aPerson)*100)/100);
+            howMuchPeopleOwe.set(aPerson,Math.round(this.#indvidualSplitTotal(aPerson)*100)/100);
         }
         return howMuchPeopleOwe;
     }
-        
+    /*
+    async #scan(){
+        var myHeaders = new Headers();
+        myHeaders.append("apikey", "ba09fab08be211ee9d5a010aee18edbc");
+      
+        var formdata = new FormData();
+        formdata.append("file", input.files[0]);
+      
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: formdata,
+          redirect: 'follow'
+        };
+      
+        var output = "hi"
+        fetch("https://api.taggun.io/api/receipt/v1/verbose/file?refresh=false&incognito=false&extractTime=false&extractLineItems=true", requestOptions)
+        .then(response => response.json())
+        .then(result => {console.log(result);
+          return result;
+        })
+        .catch(error => {console.log('error', error)
+          return "error";
+        });    
+    }
+    */
+
+    async #scan() {
+        var myHeaders = new Headers();
+        myHeaders.append("apikey", "ba09fab08be211ee9d5a010aee18edbc");
+    
+        var formdata = new FormData();
+        formdata.append("file", input.files[0]);
+    
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow'
+        };
+    
+        try {
+            const response = await fetch("https://api.taggun.io/api/receipt/v1/verbose/file?refresh=false&incognito=false&extractTime=false&extractLineItems=true", requestOptions);
+            const result = await response.json();
+            //console.log(result);
+            return result;
+        } catch (error) {
+            //console.log('error', error);
+            return "error";
+        }
+    }
+    
+    async scanRecipt(){
+
+        const scan = await this.#scan();
+        if (scan == "error"){
+            return 
+        }
+        var scanneditems = scan["amounts"];
+        var scannedSubtotal = 100000000000;
+        if (!("totalAmount" in scan)){
+            return
+        }
+        if (scan["totalAmount"]["confidenceLevel"]>0){
+            scannedSubtotal = scan["totalAmount"]["data"];
+        }
+        var i = 0;
+        while(i<scanneditems.length && this.subtotal < scannedSubtotal){
+            var lastSpaceIndex = scanneditems[i]["text"].length-1;
+            while (lastSpaceIndex>-1 && scanneditems[i]["text"][lastSpaceIndex] != ' '){
+                lastSpaceIndex -= 1;
+            }
+            if (lastSpaceIndex==-1){
+                lastSpaceIndex = scanneditems[i]["text"].length-1
+            }
+            this.additem(scanneditems[i]["text"].slice(0,lastSpaceIndex),scanneditems[i]["data"]);
+            this.#calculateSubtotal();
+            i +=1;
+        } 
+        if(this.subtotal > scannedSubtotal){
+            this.removeitem(this.items[this.items.length-1],1);
+        }
+        console.log(this.items);
+
+    }
 
 
 
     
 }
-
+check = new bill();
 
 //testing ground
 /*
@@ -166,7 +254,7 @@ remove(findIndexOfItem("Lily"), peopleSplitting);
     
 console.log(recpiet);
 
-*/
+
 check = new bill();
 check.addperson("alice");
 check.addperson("bob");
@@ -186,3 +274,4 @@ check.editTotal(30.0);
 console.log(check.calculateTotalSplit());
 check.editPeopleWhoOweItem(check.items[2],[check.people[1],check.people[0]]);
 console.log(check.calculateTotalSplit());
+*/
