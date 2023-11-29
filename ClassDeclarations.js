@@ -16,7 +16,7 @@ class bill{
     //var: arr of items, hashtable, double total, double tip, double tax
     constructor(){
             this.items = [];
-            this.people = []
+            this.people = [];
             this.peopleOwe=new Map();
             this.total = -1;
             this.subtotal = -1;
@@ -27,8 +27,12 @@ class bill{
         this.items.push(new item(itemName,price));
     }
     
-    removeitem(item){  
+    removeItem(item){  
         this.items.splice(this.items.indexOf(item),1);
+    }
+
+    removePerson(person){  
+        this.people.splice(this.people.indexOf(person),1);
     }
 
     addperson(personName){
@@ -160,7 +164,7 @@ class bill{
         if (scan["totalAmount"]["confidenceLevel"]>0){
             scannedSubtotal = scan["totalAmount"]["data"];
         }
-        var i = 0;
+        var i = 0; 
         while(i<scanneditems.length && this.subtotal < scannedSubtotal){
             var lastSpaceIndex = scanneditems[i]["text"].length-1;
             while (lastSpaceIndex>-1 && scanneditems[i]["text"][lastSpaceIndex] != ' '){
