@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href = "../styles/style2.css" rel = "stylesheet"/>
+  <title>SplitZ</title>
+</head>
+<body>
+  <div class='navbar'>
+    <div>
+      <a href='home.html'><img src="../images/backButton.png" class="nav-image"></a>
+    </div>
+    
+    <div>
+      <p id="nextNav-label" onclick="document.getElementById('next-button').click()">Next Step!</p>
+      <a href='scan.html' id="next-button"><img src="../images/forwardButton.png" class="nav-image"></a>
+    </div>
+    
+  </div>  
+  <div class='border'>
+    
+    <div id="name-section">
+      <h1 class="info-question">Who's Splitting the Bill?</h1>
+      <input type="text" id="name-input" placeholder="Enter A Name">
+      <button class="long-button" id="addPersonButton">Enter</button>
+    </div>
+  </div>
+  
+</body>
+  <script src="../ClassDeclarations.js"></script>
+  <script src="../controller.js"></script>
+
+</html>
