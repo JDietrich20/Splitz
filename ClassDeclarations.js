@@ -151,7 +151,6 @@ class bill{
     
         var formdata = new FormData();
         formdata.append("file", input.files[0]);
-    
         var requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -171,7 +170,11 @@ class bill{
     }
     
     async scanRecipt(){
-
+        for(let aPerson of this.peopleOwe.keys()){
+            this.peopleOwe.set(aPerson,[]);
+        }
+        this.items = [];
+        this.subtotal = -1;
         const scan = await this.#scan();
         if (scan == "error"){
             return 
