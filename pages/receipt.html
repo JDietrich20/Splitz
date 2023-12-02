@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href = "../styles/style2.css" rel = "stylesheet"/>
+
+  <title>SplitZ</title>
+</head>
+<body>
+  <div class='navbar'>
+    <div>
+      <a href='scan.html'><img src="../images/backButton.png" class="nav-image"></a>
+    </div>
+    <div>
+      <a href='edit.html'>Edit</a>
+    </div>
+    
+  </div>
+  <div class='border'>
+    
+    <h2 id="receipt-title">Check your receipt:</h2>
+    <div id='receipt-section'>
+      <div id='item-section'>
+      </div>
+      <div class='total-section'>
+        <p id='subtotal-price'></p>
+        <div>
+          <h1>Total:</h1>
+          <input type='number' id='total-input' placeholder="Enter Total"></p>
+        </div>
+      </div>
+    </div>
+    <a href="checklist.html"id='confirm-button' class="long-button">Confirm!</a>
+    <p class="instruction">*Total Includes Tax and Tips!</p>
+  </div>
+</body>
+  <script src="../ClassDeclarations.js"></script>
+  <script src="../controller.js"></script>
+</html>

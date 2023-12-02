@@ -25,13 +25,16 @@ class bill{
     //adding an item or person to the recpiet
     additem(itemName,price){
         this.items.push(new item(itemName,price));
+        this.#calculateSubtotal();
     }
     
     removeItem(item){  
         this.items.splice(this.items.indexOf(item),1);
+        this.#calculateSubtotal();
     }
 
-    removePerson(person){  
+    removePerson(person){ 
+        this.peopleOwe.delete(Array.from(this.peopleOwe)[this.people.indexOf(person)][0]);
         this.people.splice(this.people.indexOf(person),1);
     }
 
@@ -43,25 +46,41 @@ class bill{
     
     editItemCost(itemVar, newCost){
         itemVar.cost = newCost; 
+        this.#calculateSubtotal();
     }
 
     editPeopleWhoOweItem(itemVar, PeopleWhoOweItem){
+        //var itemVar = this.items[itemVarr]
         itemVar.numPeopleWhoOwe = PeopleWhoOweItem.length;
-        for (let aPerson of this.peopleOwe.keys()){
+        for (let aPerson of this.people){
             if (PeopleWhoOweItem.includes(aPerson)){
-                if (!(this.peopleOwe.get(aPerson).includes(itemVar))){
-                    this.peopleOwe.get(aPerson).push(itemVar);
+                if (!(this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(aPerson)][0]).includes(itemVar))){
+                    this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(aPerson)][0]).push(this.items[this.items.indexOf(itemVar)]);
                 }
             }else{
-                if (itemVar in this.peopleOwe.get(aPerson)){
-                    this.peopleOwe.set(aPerson,remove(itemVar,this.peopleOwe.get(aPerson)));
+                if (this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(aPerson)][0]).includes(itemVar)){
+                    var newarr = this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(aPerson)][0]);
+                    newarr.splice(newarr.indexOf(itemVar),1);
+                    this.peopleOwe.set(Array.from(this.peopleOwe)[this.people.indexOf(aPerson)][0],newarr);
                 }
             }
         }
     }
-
+    /*
+    doTheyOwe(person,item){
+        console.log(person);
+        console.log(this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(person)][0])[0]);
+        console.log(item);
+        console.log(this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(person)][0])[0] == this.items[this.items.indexOf(item)]);
+        console.log(this.items.indexOf(item));
+        console.log(this.items.indexOf(this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(person)][0])[0]));
+      //  for (let boughtitem of this.people){
+        return this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(person)][0]).includes(item);
+             (this.peopleOwe.get(Array.from(this.peopleOwe)[this.people.indexOf(aPerson)][0]).includes(itemVar))
+    }
+    */
     editItemName(itemVar, newName){
-        itemVar.name = newName;
+        itemVar.name = newName; 
     }
 
     //edits total 
@@ -75,6 +94,7 @@ class bill{
         for (let anItem of this.items){
             this.subtotal+=anItem.cost;
         }
+        this.subtotal = this.subtotal.toFixed(2);
     }
 
         //calculate total split for some Person
@@ -166,22 +186,25 @@ class bill{
         }
         var i = 0; 
         while(i<scanneditems.length && this.subtotal < scannedSubtotal){
-            var lastSpaceIndex = scanneditems[i]["text"].length-1;
-            while (lastSpaceIndex>-1 && scanneditems[i]["text"][lastSpaceIndex] != ' '){
-                lastSpaceIndex -= 1;
+            if (scanneditems[i]["data"]>0){
+                var lastSpaceIndex = scanneditems[i]["text"].length-1;
+                while (lastSpaceIndex>-1 && scanneditems[i]["text"][lastSpaceIndex] != ' '){
+                    lastSpaceIndex -= 1;
+                }
+                if (lastSpaceIndex==-1){
+                    lastSpaceIndex = scanneditems[i]["text"].length-1
+                }
+                this.additem(scanneditems[i]["text"].slice(0,lastSpaceIndex),scanneditems[i]["data"]);
+                this.#calculateSubtotal();
+                
             }
-            if (lastSpaceIndex==-1){
-                lastSpaceIndex = scanneditems[i]["text"].length-1
-            }
-            this.additem(scanneditems[i]["text"].slice(0,lastSpaceIndex),scanneditems[i]["data"]);
-            this.#calculateSubtotal();
             i +=1;
         } 
         if(this.subtotal > scannedSubtotal){
-            this.removeitem(this.items[this.items.length-1],1);
+            this.removeItem(this.items[this.items.length-1],1);
         }
         console.log(this.items);
-
+        return true;
     }
 
 
